@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <png.h>
-#include "image_load.h"
+#include "lib/image_load.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #define min(a,b) ((a) < (b) ? (a) : (b))
 
-int kernel_size, padding, **kernel;
+int kernel_size, padding, **kernel, threads;
 
 void create_kernel(){
   kernel = malloc( kernel_size * sizeof(int *));
@@ -16,7 +16,6 @@ void create_kernel(){
     if(kernel[i] == NULL) return;
     for(int j = 0; j < kernel_size; j++) kernel[i][j] = 1;
   }
-  padding = kernel_size / 2;
 }
 
 void calculate(int x, int y){
@@ -40,32 +39,30 @@ void calculate(int x, int y){
   px[0] = sum_r /pixels;
   px[1] = sum_g /pixels;
   px[2] = sum_b /pixels;
-
 }
 
 void process_png_file() {
   for(int y = 0; y < height; y++) {
-    #pragma omp parallel for num_threads(4)
+    #pragma omp parallel for num_threads(threads)
     for(int x = 0; x < width; x++) {
       calculate(x, y);
     }
   }
-  printf("Finished\n");
 }
 
 int main(int argc, char *argv[]) {
-  if(argc != 3) abort();
+  if(argc != 5) abort();
+
+  kernel_size = atoi(argv[3]);
+  threads = atoi(argv[4]);
+  padding = kernel_size / 2;
+  //create_kernel();
 
   read_png_file(argv[1]);
-  kernel_size = 15;
-  create_kernel();
   process_png_file();
   write_png_file(argv[2]);
 
-  for(int i = 0; i < kernel_size; i++){
-    free(kernel[i]);
-  }
-  free(kernel);
+  //free(kernel);
 
   return 0;
 }
