@@ -1,5 +1,5 @@
 run:
-	gcc main.c image_load.c -o main -lpng
+	gcc main.c image_load.c -o main -lpng -fopenmp
 	./main Shalltear.png Result.png
 
 clean:

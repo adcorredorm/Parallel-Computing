@@ -45,6 +45,7 @@ void calculate(int x, int y){
 
 void process_png_file() {
   for(int y = 0; y < height; y++) {
+    #pragma omp parallel for num_threads(4)
     for(int x = 0; x < width; x++) {
       calculate(x, y);
     }
