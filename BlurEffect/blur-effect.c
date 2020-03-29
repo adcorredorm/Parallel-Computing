@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <png.h>
+#include <sys/time.h>
 #include "lib/image_load.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
@@ -58,10 +59,19 @@ int main(int argc, char *argv[]) {
   padding = kernel_size / 2;
   //create_kernel();
 
+  struct timeval tval_before, tval_after, tval_result;
+
+  gettimeofday(&tval_before, NULL);
+
   read_png_file(argv[1]);
   process_png_file();
   write_png_file(argv[2]);
 
+  gettimeofday(&tval_after, NULL);
+
+  timersub(&tval_after,&tval_before,&tval_result);
+
+  printf("-\tTime elapsed with %d threads: %ld.%06lds\t-\n", threads, (long int)tval_result.tv_sec, (long int)tval_result.tv_usec);
   //free(kernel);
 
   return 0;
