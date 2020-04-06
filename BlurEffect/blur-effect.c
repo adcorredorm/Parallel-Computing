@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <png.h>
 #include <sys/time.h>
+#include <pthread.h>
 #include "lib/image_load.h"
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #define min(a,b) ((a) < (b) ? (a) : (b))
 
-int kernel_size, padding, **kernel, threads;
+int kernel_size, padding, **kernel, threads, bash;
 
 void create_kernel(){
   kernel = malloc( kernel_size * sizeof(int *));
@@ -42,11 +43,34 @@ void calculate(int x, int y){
   px[2] = sum_b /pixels;
 }
 
-void process_png_file() {
-  for(int y = 0; y < height; y++) {
-    #pragma omp parallel for num_threads(threads)
+void *process_png_file(int *thread_id) {
+  int init = (*thread_id) * bash;
+  int end = init + bash;
+  for(int y = init; y < min(height, end); y++) {
     for(int x = 0; x < width; x++) {
       calculate(x, y);
+    }
+  }
+}
+
+void start_process_png_file(){
+  pthread_t thread[threads];
+  int ids[threads], ok;
+  bash = height / threads;
+  for(int i = 0; i < threads; i++){
+    ids[i] = i;
+    ok = pthread_create(&thread[i], NULL, (void *)process_png_file, (void *)&ids[i]);
+    if(ok < 0){
+      perror("Error creating threads");
+      exit(-1);
+    }
+  }
+
+  for(int i = 0; i < threads; i++){
+    ok = pthread_join(thread[i], NULL);
+    if(ok < 0){
+      perror("Error joining threads");
+      exit(-1);
     }
   }
 }
@@ -64,7 +88,7 @@ int main(int argc, char *argv[]) {
   gettimeofday(&tval_before, NULL);
 
   read_png_file(argv[1]);
-  process_png_file();
+  start_process_png_file();
   write_png_file(argv[2]);
 
   gettimeofday(&tval_after, NULL);
