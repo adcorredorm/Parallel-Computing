@@ -3,4 +3,4 @@ Authors:
  - Sebastian Felipe Delgado - [sfdelgadop](https://github.com/sfdelgadop)
 
 Execution example:
-> $ make; ./blur-effect Shalltear.png Result.png 9 4
+> $ make; ./blur-effect Shalltear.png Result.png 9
