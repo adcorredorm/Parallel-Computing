@@ -25,7 +25,9 @@ mpirun -np 8 --hostfile mpi_hosts ./blur-effect 720.png 720Result.png $KERNEL 8 
 rm -f 720Result.png
 
 #Blur effect with 16 threads
-#./blur-effect 720.png 720Result.png $KERNEL 16 >> Statistics.txt
+mpirun -np 16 --hostfile mpi_hosts ./blur-effect 720.png 720Result.png $KERNEL 16 >> Statistics.txt
+rm -f 720Result.png
+
 echo '---------------------------------------------' >> Statistics.txt
 
 #1080P image
@@ -47,8 +49,10 @@ rm -f 1080Result.png
 mpirun -np 8 --hostfile mpi_hosts ./blur-effect 1080.png 1080Result.png $KERNEL 8 >> Statistics.txt
 rm -f 1080Result.png
 
-#Blur effect with 16 threads
-#./blur-effect 1080.png 1080Result.png $KERNEL 16 >> Statistics.txt
+#Blur effect with 8 threads
+mpirun -np 16 --hostfile mpi_hosts ./blur-effect 1080.png 1080Result.png $KERNEL 16 >> Statistics.txt
+rm -f 1080Result.png
+
 echo '---------------------------------------------' >> Statistics.txt
 
 #4k image
@@ -71,5 +75,7 @@ mpirun -np 8 --hostfile mpi_hosts ./blur-effect 4k.png 4kResult.png $KERNEL 8 >>
 rm -f 4kResult.png
 
 #Blur effect with 16 threads
-#./blur-effect 4k.png 4kResult.png $KERNEL 16 >> Statistics.txt
+mpirun -np 16 --hostfile mpi_hosts ./blur-effect 4k.png 4kResult.png $KERNEL 16 >> Statistics.txt
+rm -f 4kResult.png
+
 echo '---------------------------------------------' >> Statistics.txt
