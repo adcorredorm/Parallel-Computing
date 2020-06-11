@@ -157,9 +157,9 @@ void calculate(int x, int y){
   px[2] = sum_b /pixels;
 }
 
-void *process_png_file(int *thread_id) {
-  printf("hilo %d\t", *thread_id);
-  int init = (*thread_id) * bash;
+void process_png_file(int thread_id) {
+  //printf("hilo %d\t", thread_id);
+  int init = thread_id * bash;
   int end = init + bash;
   for(int y = init; y < min(height, end); y++) {
     for(int x = 0; x < width; x++) {
@@ -208,9 +208,10 @@ int main(int argc, char *argv[]) {
   if(iam == 0){
     gettimeofday(&tval_before, NULL);
     read_png_file(argv[1]);
+    bash = height / tasks;
   }
 
-  start_process_png_file();
+  process_png_file(iam);
   MPI_Barrier(MPI_COMM_WORLD);
 
   if(iam == 0){
