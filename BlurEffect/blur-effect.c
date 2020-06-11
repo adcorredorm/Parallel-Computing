@@ -158,6 +158,7 @@ void calculate(int x, int y){
 }
 
 void *process_png_file(int *thread_id) {
+  printf("hilo %d\t", *thread_id);
   int init = (*thread_id) * bash;
   int end = init + bash;
   for(int y = init; y < min(height, end); y++) {
@@ -210,6 +211,7 @@ int main(int argc, char *argv[]) {
   }
 
   start_process_png_file();
+  MPI_Barrier(MPI_COMM_WORLD);
 
   if(iam == 0){
     write_png_file(argv[2]);
