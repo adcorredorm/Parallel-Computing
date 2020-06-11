@@ -3,7 +3,7 @@
 make clean
 make
 
-KERNEL = $1
+KERNEL=$1
 
 echo "Experiments with a kernel of" $KERNEL >Statistics.txt
 #720P image
