@@ -1,11 +1,9 @@
 #! /bin/bash
 
-make clean
-make
 
 KERNEL=$1
 
-echo "Experiments with a kernel of" $KERNEL >Statistics.txt
+echo "Experiments with a kernel of" $KERNEL >> Statistics.txt
 #720P image
 echo '---------------------------------------------' >> Statistics.txt
 echo '720P Image' >> Statistics.txt

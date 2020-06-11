@@ -1,5 +1,7 @@
 #! /bin/bash
 
+make
+
 kernel_size=3
 while (( $kernel_size <= 15 ))
 do
